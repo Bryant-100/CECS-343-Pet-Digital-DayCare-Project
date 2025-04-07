@@ -1,3 +1,4 @@
+Description: This is a sample puppy state abstract class code to enforce that subclasses implements them. 
 from abc import ABC, abstractmethod
 
 class PuppyState(ABC):
