@@ -1,41 +1,42 @@
-#Pet – the object that the user interacts with.
+from task import Task
+import csv 
 
+TASK_FILENAME = "tasks.csv"
 
 class Pet:
-     # Attributes: __name, _pet_id, __tasklist, _needs, and _wins.
-    def __init__(self, name, pet_id, tasklist, needs, wins):
+     
+    def __init__(self, name, pet_id, needs, wins):        
         self._name = name
         self._pet_id = pet_id
-        self._tasklist = tasklist
+        # add later; list of task objects created from their id
+        self._tasklist = []
+        # add later; []
         self._needs = needs
         self._wins = wins
-
-    def get_pet_name(self):
+    
+    @property
+    def name(self):
         return self._name
     
-    def get_pet_id(self):
+    @name.setter
+    def name(self, name):
+        self._name = name
+    
+    @property
+    def pet_id(self):
         return self._pet_id
+        
+    def display_meter(self):
+        pass
     
-    def get_tasklist(self):
-        return self._tasklist
+    def display_tasks(self):
+        pass
     
-    def get_needs(self):
-        return self._needs
-    
+    ##### Later        
     def get_wins(self):
         return self._wins
-    
-    def set_pet_name(name):
-        name = None
-
-    def set_pet_id(pet_id):
-        pet_id = None
-
-    def set_tasklist(tasklist):
-        tasklist = None
-
-    def set_wins(wins):
+        
+    def set_wins(self, wins):
         wins = None
+        
 
-    def display_meter(self):
-        return None

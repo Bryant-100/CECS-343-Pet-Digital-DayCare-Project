@@ -1,9 +1,0 @@
-task_id,user_id,description,status
-201, 1, Feed the pet, Incomplete/Complete
-202, 1, Train pets, Incomplete/Complete
-203, 2, Walk the dog, Incomplete/Complete
-204, 3, Groom the pet, Incomplete/Complete
-205, 4, Play with the pet, Incomplete/Complete
-206, 5, Needs a bath, Incomplete/Complete
-207, 6, Take the pet to the vet, Incomplete/Complete
-208, 7, Grab the pet food, Incomplete/Complete

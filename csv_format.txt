@@ -1,0 +1,17 @@
+users.csv
+- username, user_id
+--- unique username
+--- 5-digit unique user_id number (10000-99999) (values under 10000 unaccounted for)
+--- max 3 pets; 
+--- pet#_id default to -1 for no pet
+
+pets.csv
+- user_id, pet_name, pet_id, hunger, thirst, sleep, fun, wins
+--- 5-digit unique pet_id (10000-99999) (values under 10000 unaccounted for)
+--- max 5 tasks per pet
+--- task#_id default to -1 for no pet
+
+tasks.csv
+- pet_id, task_id, description, priority, status
+--- 5-digit unique task_id  (10000-99999) (values under 10000 unaccounted for)
+--- priority 1-5 (according to max tasks)

@@ -100,11 +100,10 @@ def get_username(curr_usernames):
     Returns:
         a unique username
     """
-    username = input("Please choose a username: ")
-    valid = False
+    username = input("Please choose a name: ")    
     while username in curr_usernames:
-        print("That username is taken :(")
-        username = input("Please choose another username: ")
+        print("That name is taken :(")
+        username = input("Please choose another name: ")
     return username
     
     
