@@ -5,6 +5,7 @@ class Task:
         self.description = desc
         self.day_frequency = day_frequency
         self.frequency = frequency
+        
     @property
     def task_id(self):
         return self._task_id
