@@ -12,9 +12,31 @@ def main():
         while session:            
             choice = user.main_menu()
             match choice:
-                case 1: #visit friend 
-                    user.display_pets()
-                    # user.action_handler()                 
+                case 1: #visit friend
+                    pet = user.pet_handler()
+                    pet_room = True
+
+                    while pet_room:                        
+                        if pet: #if there is a pet
+                            task_choice = pet.pet_menu()
+                            
+                            match task_choice:
+                                case 1: #mark complete
+                                    pass
+                                case 2: #mark incomplete
+                                    pass
+                                case 3: #Settings
+                                    pass
+                                case 4: #Return
+                                    pet_room = False
+                                case default:
+                                    continue
+                        else:                            
+                            pet_room = False
+                        
+                        
+                        
+                        
                 case 2: # add friends                                                            
                     user.add_pet()
                 case 3: # remove friend

@@ -91,7 +91,7 @@ def get_yes_no(prompt):
         else:
             print("Invalid - input is either 'Yes/Y' or 'No/N'")
 
-def get_username(curr_usernames):
+def get_username(prompt, curr_usernames):
     """ Validate the current username
     Args:
         prompt(str): display prompt before taking input
@@ -100,7 +100,7 @@ def get_username(curr_usernames):
     Returns:
         a unique username
     """
-    username = input("Please choose a name: ")    
+    username = input(prompt)    
     while username in curr_usernames:
         print("That name is taken :(")
         username = input("Please choose another name: ")

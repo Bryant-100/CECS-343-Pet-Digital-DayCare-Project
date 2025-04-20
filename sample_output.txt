@@ -1,51 +1,37 @@
 Welcome to the digital pet daycare!
 1. Do you have an account already? y
-There are no existing accounts. Let's make a new one!
 
-Please choose a username: John
-Account created!
-Welcome John!
---------------
-Main Menu
---------------
+Accounts:
+1. Steven
+2. Return to Login
+Which account is yours? 1
+
+~~~~~~~ Welcome Steven! ~~~~~~~
+------------------------------
+          Main Menu
+------------------------------
 What would you like to do today?
-1. Check pets
-2. Add pets
-3. Remove pets
-4. Notifications
-5. Logout
+    1. Visit friends
+    2. Make new friends
+    3. Say goodbyes
+    4. Settings
+    5. Logout
+> 1
 
-Notification Sample:
-(Case1; 1 pet) !! ____ needs attention
-(Case2; 2 pets) !! ____ and ____ are feeling sick
+------Friends------
+1. Stt
+Who would you like to visit? 1
 
-
-1
---------------
-Pets
---------------
-Which pet would you like to visit?
-1. Annie
-2. Kevin
-3. Silly
-
-1
---------------
-Annie's Room
---------------
-Hunger -- 20/100
-Thirst -- 30/100
-Sleep -- 20/100
-Mood -- 20/100
-Annie is feeling ___ :(
-Here's how you can help Annie!!
-1. Task1
-2. Task2
-3. Task3
-
-
-
-
-
-
-
+------------------------------
+          Stt's Room
+   ~Stt is feeling elated~
+------------------------------
+Here are things you haven't done together today:
+1. Walking
+______________________________
+What do you want to do first?
+1. Mark completed
+2. Undo completion
+3. Setting
+4. Go back
+>>

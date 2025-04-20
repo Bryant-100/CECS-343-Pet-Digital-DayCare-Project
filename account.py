@@ -2,24 +2,22 @@ from check_input import *
 from pet import Pet
 import csv, random
 
-
 PETS_FILENAME = "pets.csv"
 
 class Account:
-    def __init__(self, username, user_id, pets):
+    def __init__(self, username, user_id):
         self._username = username
         self._user_id = user_id        
-        self._pets = []        
+        self._pets = []
+           
         # reading in pets
         try:            
             with open(PETS_FILENAME, mode="r") as file:
                 reader = csv.reader(file)            
                 for row in reader:
-                    read_user_id, pet_name, pet_id,\
-                    hunger, thirst, sleep, fun, wins = row
+                    read_user_id, pet_name, pet_id, status, species = row
                     if read_user_id == user_id: #checking for correct user_id
-                        self._pets.append(Pet(pet_name, pet_id,                            
-                                    [hunger, thirst, sleep, fun],wins))
+                        self._pets.append(Pet(pet_name, pet_id, status, species))
         except FileNotFoundError: # create new file if pets.csv not found
             print("Error: pets.csv file not found. Creating a new file.")
             open(PETS_FILENAME, mode="w").close()
@@ -48,31 +46,36 @@ class Account:
     def display_pets(self):
         # consider new user or no pet found
         print("\n------Friends------")
-        if (-1 not in self._pets) and (len(self._pets) != 0):
+        if (len(self._pets) != 0):
             for i, pet in enumerate(self._pets, start = 1):
                 print(str(i) + ". " + pet.name)
-        else: # if -1 exist or len = 0
+        else:
             print("There are no friends at your house yet!")
     
     def add_pet(self): # add task is separate, done after adding friend
-        pet_name = get_username([pet.name for pet in self._pets])
+        if len(self._pets) < 3:
+            pet_name = get_username("What is the name of your friend? ",[pet.name for pet in self._pets])            
+            # Generate a random 5-digit ID
+            curr_pet_ids = [pet.pet_id for pet in self._pets]
+            while True:
+                new_pet_id = str(random.randint(10000, 99999))
+                if new_pet_id not in curr_pet_ids:
+                    break
+                                                
+            selected_species = get_int_range("Where are you meeting this friend?\n1. Local park\
+                                            \n2. Pokemon World\n3. Age of Dinosaurs\n>> ",1,3)
             
-        # Generate a random 5-digit ID
-        curr_pet_ids = [pet.pet_id for pet in self._pets]
-        while True:
-            new_pet_id = str(random.randint(10000, 99999))
-            if new_pet_id not in curr_pet_ids:
-                break
-        
-        new_pet = Pet(pet_name, new_pet_id, [70]*4, 0)
-        self._pets.append(new_pet)                        
-        
-        # saving new pet to csv
-        with open(PETS_FILENAME, mode="a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([self._user_id, pet_name, new_pet_id,70,70,70,70,0])
-        
-        print(f"{new_pet.name} has arrived!")
+            new_pet = Pet(pet_name, new_pet_id, 5, selected_species)
+            self._pets.append(new_pet)
+            
+            # saving new pet to csv
+            with open(PETS_FILENAME, mode="a", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow([self._user_id, pet_name, new_pet_id, 5, selected_species])
+            
+            print(f"{new_pet.name} has arrived!")
+        else:
+            print(f"There is not enough room for another friend :(")
     
     def remove_pet(self):        
         pet_cnt = len(self._pets)
@@ -106,8 +109,13 @@ class Account:
         else: # no pets
             print("There are currently no friends here!")
     
-    def action_handler(): # process options
-        pass
+    def pet_handler(self): # handle visitation        
+        self.display_pets()
+        if (len(self._pets) != 0):
+            pet_index = get_int_range("Who would you like to visit? ",1, len(self._pets))
+            return self._pets[pet_index-1]
+        return None
+        
         
         
     

@@ -21,8 +21,8 @@ class AccountManager:
             with open(ACC_FILENAME, mode="r") as file:
                 reader = csv.reader(file)            
                 for row in reader:
-                    username, user_id, pet1_id, pet2_id, pet3_id = row
-                    self._users.append(Account(username, user_id,[pet1_id, pet2_id, pet3_id]))
+                    username, user_id = row
+                    self._users.append(Account(username, user_id))
         except FileNotFoundError: # create new file if users.csv not found
             print("Error: users.csv file not found. Creating a new file.")
             open(ACC_FILENAME, mode="w").close()            
@@ -72,7 +72,7 @@ class AccountManager:
             the newly created Account object 
         """
         # choose and validate username
-        username = get_username([account.username for account in self._users])
+        username = get_username("Please choose a username: ",[account.username for account in self._users])
 
         # Generate a random 5-digit ID
         curr_ids = [account.user_id for account in self._users]
@@ -82,13 +82,13 @@ class AccountManager:
                 break
         
         # Create and store Account instance
-        new_account = Account(username, new_id, [-1] * 3)
+        new_account = Account(username, new_id)
         self._users.append(new_account)
         
         # saving new account to csv
         with open(ACC_FILENAME, mode="a", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow([username, new_id,-1,-1,-1])        
+            writer.writerow([username, new_id])        
                 
         print(f"Account created!")
         return new_account
@@ -132,8 +132,6 @@ class AccountManager:
         else:            
             return self.create_account()
     
-    def handle_logout():
-        pass
     
     
             
