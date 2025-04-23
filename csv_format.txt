@@ -15,3 +15,9 @@ tasks.csv
 - pet_id, description, status
 --- priority 1-5 (according to max tasks)
 --- 1 for completed; 0 otherwise
+
+challenge.csv //my ideas for implementing challenge in two classes
+- name_challenge, status, difficulty
+--- 3-4? different challenges 
+--- status: win/lose (if the pets battles with another pets with its species possibly get damage)
+---  display a message when the pets choose "fight mode" or "flight mode"?
