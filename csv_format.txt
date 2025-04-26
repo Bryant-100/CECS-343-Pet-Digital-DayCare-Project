@@ -5,13 +5,13 @@ users.csv
 --- max 3 pets; 
 
 pets.csv
-- user_id, pet_name, pet_id, status, species
+- user_id, pet_name, pet_id, status, species, challenge, last_updated
 --- 5-digit unique pet_id (10000-99999) (values under 10000 unaccounted for)
 --- max 5 tasks per pet
 --- status 1-5 (exhausted, tired, fine, happy, elated)
 --- species (normal, pokemon, dinosaur)
+--- challenge (True for attempted; False otherwise); 1 challenge per pet per day (refer to readme)
 
 tasks.csv
-- pet_id, description, status
---- priority 1-5 (according to max tasks)
---- 1 for completed; 0 otherwise
+- pet_id, task_id, description, status
+--- status; 1 for completed; 0 otherwise

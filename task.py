@@ -2,10 +2,16 @@ from check_input import *
 
 
 class Task:
-    def __init__(self, pet_id, description, status):
+    def __init__(self, pet_id, task_id, description, status):
         self._pet_id = pet_id
         self._desc = description
         self._status = status
+        self._task_id = task_id
+    
+        
+    @property
+    def task_id(self):
+        return self._task_id
     
     @property
     def desc(self):
@@ -20,6 +26,5 @@ class Task:
         return self._status
     
     @status.setter
-    def status(self, new_status):
+    def status(self, new_status):        
         self._status = new_status
-    

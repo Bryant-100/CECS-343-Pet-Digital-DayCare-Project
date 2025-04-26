@@ -4,12 +4,13 @@ from check_input import *
 
 def main():    
     login = True    
+    manager = AccountManager()
     while login:
-        print("Welcome to the digital pet daycare!")
-        manager = AccountManager()
+        print("Welcome to the digital pet daycare!")        
         user = manager.handle_login()
-        session = True
-        while session:            
+        
+        session = True if user is not None else False        
+        while session:
             choice = user.main_menu()
             match choice:
                 case 1: #visit friend
@@ -18,37 +19,37 @@ def main():
 
                     while pet_room:                        
                         if pet: #if there is a pet
-                            task_choice = pet.pet_menu()
+                            task_menu_opt = pet.pet_menu() # choose
                             
-                            match task_choice:
+                            match task_menu_opt:
                                 case 1: #mark complete
-                                    pass
+                                    pet.mark_list_complete()
+                                    user.save_pets()
                                 case 2: #mark incomplete
-                                    pass
-                                case 3: #Settings
-                                    pass
-                                case 4: #Return
+                                    pet.mark_list_incomplete()
+                                    user.save_pets()
+                                case 3: # Challenge
+                                    pet.process_challenge()
+                                    # saves pet's challenge and status
+                                    user.save_pets()
+                                case 4: # activity center
+                                    pet.task_handler()
+                                case 5: # Return
                                     pet_room = False
                                 case default:
                                     continue
-                        else:                            
-                            pet_room = False
-                        
-                        
-                        
-                        
+                        else:         
+                            pet_room = False                                            
                 case 2: # add friends                                                            
                     user.add_pet()
                 case 3: # remove friend
                     user.remove_pet()
                 case 4: # settings (notifs + removal)
-                    print("\n----Settings----\n1. Notifications\n2. Delete Account\n3. Go back")
-                    setting_choice = get_int_range("What would you like to do? ",1,3)
+                    print("\n----Settings----\n1. Delete Account\n2. Go back")
+                    setting_choice = get_int_range("What would you like to do? ",1,2)
                     print()
-                    match setting_choice:
-                        case 1: # notifs
-                            pass
-                        case 2: # delete current account
+                    match setting_choice:                        
+                        case 1: # delete current account
                             deletion = get_yes_no("This account will be permanently removed, are you sure? ")
                             if deletion:                   
                                 manager.delete_account(user)
@@ -56,11 +57,12 @@ def main():
                                 print("Going back to Login...")
                             else: 
                                 print("Going back to main menu...")
-                        case 3:
+                        case 2:
                             print("Going back..")                            
                 case 5: # back to main menu
-                    print()                
+                    print()
                     break
+                              
             print()
     print("See you again!")
     

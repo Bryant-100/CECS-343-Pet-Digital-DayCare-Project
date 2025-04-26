@@ -59,10 +59,10 @@ class AccountManager:
             print("Which account is yours? ", end="")
             
             choice = get_int_range("",1, curr_users+1)
-            if choice != curr_users+1:                                    
+            if choice != curr_users+1:
                 return self._users[choice-1]
             else:
-                return -1
+                return None
     
     def create_account(self):
         """ Create a new account for the user
