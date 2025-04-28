@@ -122,7 +122,7 @@ class AccountManager:
         Returns:
             True if successful, False otherwise
         """
-        have_account = get_yes_no("1. Do you have an account already? ")
+        have_account = get_yes_no("1. Do you have an account already? (y/n) ")
         if have_account:            
             user = self.choose_account()
             if user != -1:
