@@ -21,6 +21,7 @@ class AccountManager:
             with open(ACC_FILENAME, mode="r") as file:
                 reader = csv.reader(file)            
                 for row in reader:
+                    if len(row) == 2:
                     username, user_id = row
                     self._users.append(Account(username, user_id))
         except FileNotFoundError: # create new file if users.csv not found
