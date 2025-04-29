@@ -34,4 +34,30 @@ What do you want to do first?
 2. Undo completion
 3. Setting
 4. Go back
->>
+> 1
+------------------------------
+What will you add to your routine together? "Go to the beach."
+New activity added!!
+
+-------------------------------
+          Stt's Room
+    ~Stt is feeling fine~
+------------------------------
+Here are things you haven't done together today:
+1. Eating
+------------------------------
+          Stt's room
+    ~Stt is feeling exhausted~
+------------------------------
+Health Level: low to moderate 
+Feed pets to get more energy (80%)
+-------------------------------
+What do you want to do first?
+1. Mark completed
+2. Undo completion
+3. Setting
+4. Go back
+> 2
+-------------------------------
+What will you add to your routine together? Bathe your pet
+New activity added!!
