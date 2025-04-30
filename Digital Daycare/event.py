@@ -23,7 +23,7 @@ class Event():
         """
         result = 2 if random.random() < 0.45 else -1
         if result == 2:
-            prompt="Swimming at the lake feels great! Your choice to pack lunch AND desert was genius.\nToday was unforgettable!!"
+            prompt="Swimming at the lake feels great! Your choice to pack lunch AND dessert was genius.\nToday was unforgettable!!"
         else:
             prompt="You both went for a swim at a nearby lake, only to realize your change of clothes was left at home. You walk home in the freezing cold..."
         return (result, prompt)
@@ -35,7 +35,7 @@ class Event():
         """
         result = 2 if random.random() < 0.20 else 0
         if result == 2:
-            prompt="You made desert for your house guests. It was a big hit! The plate was spotless. Elated, you're thinking about opening a bakery..."
+            prompt="You made dessert for your house guests. It was a big hit! The plate was spotless. Elated, you're thinking about opening a bakery..."
         else:            
-            prompt="You made desert for your house guests. It wasn't very popular, now your fridge is filled with leftovers..."
+            prompt="You made dessert for your house guests. It wasn't very popular, now your fridge is filled with leftovers..."
         return (result, prompt)
