@@ -9,12 +9,20 @@ from tkinter import messagebox
 
 ACC_FILENAME = "users.csv"
 
-class AccountManager:    
+class AccountManager:
+    """ Manages multiple user accounts, handling the loading, creation, and removal of Account
+    Attributes:
+        root (Tk): The root Tkinter window
+        frame (Frame): The GUI frame where the pet is displayed
+        acc (Account): The account associated with this pet
+        app (App): the App instance to refer to
+        _selected_user (Account): The Account instance to pass on        
+    """
     def __init__(self, root, frame, app):
         """ Loads in accounts from file
         Args:
-            root (tkinter.Tk): the Root instance to be passed on
-            frame (tkinter.Frame): the Frame instance to be passed on
+            root (Tk): the Root instance to be passed on
+            frame (Frame): the Frame instance to be passed on
             app (App): the App instance to pass on
         """
         self._users = []
@@ -43,13 +51,13 @@ class AccountManager:
             widget.destroy()
 
         # Change bg
-        self.new_bg_image = Image.open("new_account_bg.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/new_account_bg.png")
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
         # RETURN button
-        self.return_img = Image.open("return_button.png").resize((33,33))
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
         self.return_button_image = ImageTk.PhotoImage(self.return_img)     
         self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
                                        activebackground="#EE8B5F", highlightbackground="#EE8B5F",
@@ -65,20 +73,20 @@ class AccountManager:
         self.username_entry.place(relx=0.5, rely=0.40, anchor="center")
 
         # CONFIRM BUTTON
-        self.confirm_button_image = Image.open("confirm_button.png")  # Replace with your image file path
-        self.confirm_button_image = self.confirm_button_image.resize((310, 106))  # Resize to fit the button
-        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)  # Corrected this line
+        self.confirm_button_image = Image.open("interfaces/confirm_button.png")
+        self.confirm_button_image = self.confirm_button_image.resize((310, 106))
+        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)
         
         self.confirm_button = tk.Button(self.frame, image=self.confirm_button_photo, 
                                         command = self.process_new_acc, 
                                         bd=0, highlightthickness=0, activebackground="#EE8B5F")
-        self.confirm_button.place(relx=0.5, rely=0.62, anchor="center")  # Position it in the center
+        self.confirm_button.place(relx=0.5, rely=0.62, anchor="center")
         
     def process_new_acc(self):
         """ Handles the creation of a new account        
         """
         # choose and validate username
-        new_username = self.username_entry.get()        
+        new_username = self.username_entry.get().strip()
         
         # Check if the username is empty
         if not new_username:
@@ -133,10 +141,9 @@ class AccountManager:
         for widget in self.frame.winfo_children():
             widget.destroy()
                    
-        self.new_bg_image = Image.open("choose_account_bg.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/choose_account_bg.png")
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
-
-        # Show background on pick screen
+        
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
@@ -146,14 +153,13 @@ class AccountManager:
         account_label.place(relx=0.5, rely=0.18, anchor="center")     
         
         # RETURN button
-        self.return_img = Image.open("return_button.png").resize((33,33))
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
         self.return_button_image = ImageTk.PhotoImage(self.return_img)     
         self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
                                        activebackground="#EE8B5F", highlightbackground="#EE8B5F",
                                        command=(self.app).setup_main_screen, borderwidth=0)
         self.return_button.place(relx=0.05, rely=0.03)
-        
-        
+                
         # SCROLLBAR; frame
         listbox_frame = tk.Frame(self.frame, bg="white")
         listbox_frame.place(relx=0.5, rely=0.38, anchor="center")
@@ -171,7 +177,7 @@ class AccountManager:
         
         if not self._users:
             # Display "No accounts located" message above the listbox
-            no_user_label = tk.Label(self.frame, text="No accounts located", font=("Courier", 16, "bold"),
+            no_user_label = tk.Label(self.frame, text="No account located", font=("Courier", 16, "bold"),
                                      fg="#BC0E00", bg="white", pady=20)
             no_user_label.place(relx=0.5, rely=0.33, anchor="center")
         
@@ -183,8 +189,8 @@ class AccountManager:
         self.listbox.config(yscrollcommand=scrollbar.set)
         
         # CONFIRM BUTTON
-        button_bg_img = Image.open("confirm_button.png")  # Replace with your image
-        button_bg_img = button_bg_img.resize((240, 80))  # Resize to fit your button size
+        button_bg_img = Image.open("interfaces/confirm_button.png")
+        button_bg_img = button_bg_img.resize((240, 80))
         button_bg_photo = ImageTk.PhotoImage(button_bg_img)
 
         self.select_button = tk.Button(self.frame, image=button_bg_photo, 
@@ -194,7 +200,7 @@ class AccountManager:
         self.select_button.place(relx=0.5, rely=0.65, anchor="center")
 
         # Keep a reference to the button background image to prevent garbage collection
-        self.select_button.image = button_bg_photo  # Store a reference to the image
+        self.select_button.image = button_bg_photo
   
     def handle_login(self):
         """ Handles user selection and calls next screen
@@ -215,12 +221,20 @@ class AccountManager:
         for widget in self.frame.winfo_children():
             widget.destroy()
                    
-        self.new_bg_image = Image.open("choose_account_bg.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/choose_account_bg.png")
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
 
         # Show background on pick screen
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
-        self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)        
+        
+        # RETURN BUTTON
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
+        self.return_button_image = ImageTk.PhotoImage(self.return_img)     
+        self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
+                                       activebackground="#EE8B5F", highlightbackground="#EE8B5F",
+                                       command=(self.app).setup_main_screen, borderwidth=0)
+        self.return_button.place(relx=0.05, rely=0.03)
         
         # ACCOUNT LABEL
         account_label = tk.Label(self.frame, text="Accounts", font=("Courier", 22, "bold"), 
@@ -242,6 +256,13 @@ class AccountManager:
         for account in self._users:
             self.listbox.insert(tk.END, " " + account.username)
 
+        # NO ACCOUNTS LOCATED LABEL
+        if not self._users:
+            # Display "No accounts located" message above the listbox
+            no_user_label = tk.Label(self.frame, text="No account located", font=("Courier", 16, "bold"),
+                                     fg="#BC0E00", bg="white", pady=20)
+            no_user_label.place(relx=0.5, rely=0.33, anchor="center")
+        
         # Create a scrollbar for the listbox
         scrollbar = tk.Scrollbar(listbox_frame, orient="vertical", command=self.listbox.yview)
         scrollbar.pack(side="right", fill="y")
@@ -250,8 +271,8 @@ class AccountManager:
         self.listbox.config(yscrollcommand=scrollbar.set)
         
         # CONFIRM BUTTON
-        button_bg_img = Image.open("delete_button.png")  # Replace with your image
-        button_bg_img = button_bg_img.resize((240, 90))  # Resize to fit your button size
+        button_bg_img = Image.open("interfaces/delete_button.png")
+        button_bg_img = button_bg_img.resize((240, 90))
         button_bg_photo = ImageTk.PhotoImage(button_bg_img)
 
         self.select_button = tk.Button(self.frame, image=button_bg_photo, 
@@ -261,7 +282,7 @@ class AccountManager:
         self.select_button.place(relx=0.5, rely=0.65, anchor="center")
 
         # Keep a reference to the button background image to prevent garbage collection
-        self.select_button.image = button_bg_photo  # Store a reference to the image
+        self.select_button.image = button_bg_photo
   
     def handle_removal(self):
         """ Handles the removal of selected account        
@@ -300,4 +321,3 @@ class AccountManager:
             self.app.back_to_main()            
 
             
-        
