@@ -1,10 +1,8 @@
 from task import Task
 from event import Event
 from check_input import *
-from datetime import datetime
 from math import ceil
 import csv, random
-
 
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -13,24 +11,34 @@ from tkinter import messagebox
 
 TASK_FILENAME = "tasks.csv"
 
-class CustomCheckbox(tk.Frame):    
+class CustomCheckbox(tk.Frame):
+    """ Custom-style checkbox to represent the task completion status
+    Args:
+        tk (Frame): the Frame instance to build on
+    """
     def __init__(self, master, task, icon=None, *args, **kwargs):
+        """ Initialize the checkbox widget
+        Args:
+            master (tk.Widget): parent widget
+            task (Task): the Task instance to refer to
+            icon (PIL.Image.Image, optional): the custom image for the checkbox. Defaults to None
+        """
         super().__init__(master, bg="white", *args, **kwargs)
         
         self.task = task  # Store the task object
-        self.var = tk.IntVar()
+        self.var = tk.IntVar() # gets the state of the widget
 
-        # Set default icons or use the provided one
-        if icon: # removal checkboxes            
-                self.img_unchecked= ImageTk.PhotoImage(Image.open("neutral.png").resize((30, 30)))
+        # Set icons; DEFAULT or PROVIDED
+        if icon: # icon for task REMOVAL 
+                self.img_unchecked= ImageTk.PhotoImage(Image.open("interfaces/neutral.png").resize((30, 30)))
                 self.img_checked = ImageTk.PhotoImage(icon.resize((30, 30)))
-        else: # completion checkboxes
+        else: # icon for task COMPLETION status
             if task.status == 1: # current task is active (check=incomplete, uncheck=completed)
-                self.img_checked = ImageTk.PhotoImage(Image.open("incompleted.png").resize((30, 30)))                
-                self.img_unchecked = ImageTk.PhotoImage(Image.open("completed.png").resize((30, 30)))
+                self.img_checked = ImageTk.PhotoImage(Image.open("interfaces/incompleted.png").resize((30, 30)))                
+                self.img_unchecked = ImageTk.PhotoImage(Image.open("interfaces/completed.png").resize((30, 30)))
             else:
-                self.img_checked = ImageTk.PhotoImage(Image.open("completed.png").resize((30, 30)))
-                self.img_unchecked = ImageTk.PhotoImage(Image.open("incompleted.png").resize((30, 30)))                
+                self.img_checked = ImageTk.PhotoImage(Image.open("interfaces/completed.png").resize((30, 30)))
+                self.img_unchecked = ImageTk.PhotoImage(Image.open("interfaces/incompleted.png").resize((30, 30)))                
 
         self.checklist_picture_label = tk.Label(self, image=self.img_unchecked, bg="white")
         self.checklist_picture_label.pack(side="left", padx=5, pady=5)
@@ -43,6 +51,11 @@ class CustomCheckbox(tk.Frame):
         self.task_desc_label.bind("<Button-1>", self.toggle)
 
     def toggle(self, event=None):
+        """ Toggle checkboxes between check/uncheck
+
+        Args:
+            event (tk.Event, optional): Event object to be accessed. Defaults to None
+        """
         if self.var.get() == 0:
             self.var.set(1)
             self.checklist_picture_label.config(image=self.img_checked)
@@ -51,23 +64,43 @@ class CustomCheckbox(tk.Frame):
             self.checklist_picture_label.config(image=self.img_unchecked)
 
     def get_state(self):
+        """ returns current checkbox state
+
+        Returns:
+            1 if checked; otherwise 0
+        """
         return self.var.get()
-    
-    # def set_state(self, value): #remove?
-    #     """ Serves as a toggle that flips the selection
-    #     """      
-    #     self.var.set(value) #change to specified value
-    #     # change icon once clicked
-    #     if self.var.get() == 0: 
-    #         self.var.set(1)
-    #         self.checklist_picture_label.config(image=self.img_checked)            
-    #     else:
-    #         self.var.set(0)
-    #         self.checklist_picture_label.config(image=self.img_unchecked)        
-        
+       
 
 class Pet:
+    """ Represents a virtual pet with tasks associated
+    Attributes:
+        root (Tk): The root Tkinter window
+        frame (Frame): The GUI frame where the pet is displayed
+        acc (Account): The account associated with this pet
+        _name (str): Name of the pet
+        _pet_id (int): Unique 5-digit ID of the pet.
+        _status (int): Current status of the pet (1-5).
+        _species (int): Encoded species type of the pet
+        _animal_id (int): Encoded specific animal chosen
+        _event (int): Current status of event's completion for the day
+        _tasks (list): A list of Task objects assigned to the pet.
+        checkboxes (list): GUI checkbox widgets linked to each task.
+        extra_stat (int): Placeholder for additional state/stat tracking.
+    """
     def __init__(self, root, frame, account, name, pet_id, status, species, animal_id, event):
+        """ Initialize the Pet instance
+        Args:
+            root (Tk): The root Tkinter window
+            frame (Frame): The GUI frame displayed on
+            account (Account): The account associated with this pet
+            name (str): The pet's name.
+            pet_id (str): Unique 5-digit id 
+            status (str): The current status of the pet (1-5).
+            species (str): Encoded species code of the pet.
+            animal_id (str): Enconded animal type code.
+            event (str): Current status of event's completion for the day
+        """
         self.root = root
         self.frame = frame
         self.acc = account
@@ -123,10 +156,9 @@ class Pet:
                      2: ("pets/cat1.png", "pets/cat2.png"),
                      3: ("pets/ham1.png", "pets/ham2.png"),
                      4: ("pets/rex1.png", "pets/rex2.png"),
-                     5: ("pets/bronto1.png", "pets/bronto2.png")
-                     }        
+                     5: ("pets/bronto1.png", "pets/bronto2.png"),
+                     6: ("pets/trice1.png", "pets/trice2.png")}
         species_bg = bg_stored[self._animal_id]
-        
         self.load_csv()
         
         # Load both images
@@ -137,7 +169,6 @@ class Pet:
         self.bg_label = tk.Label(self.frame)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
-        
         # STATUS INTERFACE
         completed_tasks = [1 if task.status == 1 else 0 for task in self._tasks]
         if len(self._tasks) != 0:
@@ -147,7 +178,7 @@ class Pet:
             self.final_status = 1
         
         self._status = max(1, min(self.final_status + self.extra_stat,5))
-        status_path = f"status{self._status}.png"
+        status_path = f"interfaces/status{self._status}.png"
         self.status_image = ImageTk.PhotoImage(Image.open(status_path))
         self.status_label = tk.Label(self.frame, image=self.status_image, bg="black")
         self.status_label.place(relx=0.1, rely=0.13)
@@ -168,7 +199,7 @@ class Pet:
         self.name_label.tkraise()
 
         # BACK BUTTON
-        self.return_img = Image.open("return_button.png").resize((33,33))
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
         self.return_button_image = ImageTk.PhotoImage(self.return_img)     
         self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
                                        activebackground="#EE8B5F", highlightbackground="#EE8B5F",
@@ -176,7 +207,7 @@ class Pet:
         self.return_button.place(relx=0.05, rely=0.03)
 
         # ACTIVITY BUTTON
-        self.activity_img = Image.open("activity_button.png")
+        self.activity_img = Image.open("interfaces/activity_button.png")
         self.activity_button_img = ImageTk.PhotoImage(self.activity_img)             
         self.activity_button = tk.Button(self.frame, image=self.activity_button_img, background="#0E1917",
                                     command=self.open_activity_screen, borderwidth=0)
@@ -184,7 +215,7 @@ class Pet:
         
         
         # EVENT BUTTON
-        self.event_img = Image.open("event_button.png")
+        self.event_img = Image.open("interfaces/event_button.png")
         self.event_button_img = ImageTk.PhotoImage(self.event_img)
         self.event_button = tk.Button(self.frame, image=self.event_button_img, background="#0E1917",
                                     command=self.open_event_window, borderwidth=0)
@@ -196,14 +227,15 @@ class Pet:
             try:
                 self.bg_label.configure(image=self.bg_images[self.bg_index])
                 self.bg_index = (self.bg_index + 1) % len(self.bg_images)
-                self.bg_animation_id = self.frame.after(500, animate_bg)  # Save the ID here
-            except tk.TclError:
-                # Widget has been destroyed, stop animation
-                return
+                self.bg_animation_id = self.frame.after(500, animate_bg)  # Save ID to stop animation
+            except tk.TclError:                
+                return # Widget destroyed, stop animation
 
-        animate_bg()  # Start animation
+        animate_bg()
         
     def load_csv(self):
+        """ Load task data from csv
+        """
         self._tasks = []
         try:
             with open(TASK_FILENAME, mode="r") as file:
@@ -216,6 +248,8 @@ class Pet:
             open(TASK_FILENAME, mode="w").close()  
     
     def open_activity_screen(self):
+        """ Display the screen for activities
+        """
         if hasattr(self, 'bg_animation_id'):
             self.frame.after_cancel(self.bg_animation_id)        
 
@@ -223,7 +257,7 @@ class Pet:
             widget.destroy()
 
         # Change bg
-        self.new_bg_image = Image.open("activity_room.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/activity_room.png")  # New background image
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -234,7 +268,7 @@ class Pet:
         self.activities_label.place(relx=.5, rely=.12, anchor="center")
         
         # REMOVE button
-        self.remove_img = Image.open("remove_button.png").resize((33, 33))
+        self.remove_img = Image.open("interfaces/remove_button.png").resize((33, 33))
         self.remove_button_image = ImageTk.PhotoImage(self.remove_img)
         
         self.remove_button = tk.Button(self.frame, 
@@ -244,33 +278,30 @@ class Pet:
                                         borderwidth=0, relief="flat",
                                         highlightthickness=0, 
                                         activebackground="#A9745C")
-        self.remove_button.place(relx=0.27, rely=0.6, anchor="center")  # adjust position as you want        
+        self.remove_button.place(relx=0.27, rely=0.6, anchor="center")
         
         # ADD button
-        self.add_img = Image.open("add_button.png").resize((33, 33))
+        self.add_img = Image.open("interfaces/add_button.png").resize((33, 33))
         self.add_button_image = ImageTk.PhotoImage(self.add_img)
         
-        self.add_button = tk.Button(self.frame, 
-                                        image=self.add_button_image, 
-                                        command=self.handle_new_task,
-                                        background="#A9745C", 
-                                        borderwidth=0, relief="flat",
-                                        highlightthickness=0, 
-                                        activebackground="#A9745C")
-        self.add_button.place(relx=0.16, rely=0.6, anchor="center")  # adjust position as you want     
+        self.add_button = tk.Button(self.frame, image=self.add_button_image, 
+                                        command=self.handle_new_task, 
+                                        background="#A9745C", borderwidth=0, relief="flat", 
+                                        highlightthickness=0, activebackground="#A9745C")
+        self.add_button.place(relx=0.16, rely=0.6, anchor="center")
         
         # CONFIRM BUTTON
-        self.confirm_button_image = Image.open("confirm_button.png")  # Replace with your image file path
-        self.confirm_button_image = self.confirm_button_image.resize((226, 85))  # Resize to fit the button
-        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)  # Corrected this line
+        self.confirm_button_image = Image.open("interfaces/confirm_button.png")
+        self.confirm_button_image = self.confirm_button_image.resize((226, 85))
+        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)
         
         self.confirm_button = tk.Button(self.frame, image=self.confirm_button_photo, 
                                         command=self.process_task_status, 
                                         bd=0, highlightthickness=0, activebackground="#EE8B5F")
-        self.confirm_button.place(relx=0.5, rely=0.75, anchor="center")  # Position it in the center
+        self.confirm_button.place(relx=0.5, rely=0.75, anchor="center")
         
         # RETURN BUTTON        
-        self.return_img = Image.open("return_button.png").resize((33,33))
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
         self.return_button_image = ImageTk.PhotoImage(self.return_img)     
         self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
                                     activebackground="#EE8B5F", highlightbackground="#EE8B5F",
@@ -288,7 +319,7 @@ class Pet:
         # frame for checkbox
         self.checklist_frame = tk.Frame(self.checklist_canvas, bg="white")
         self.checklist_canvas.create_window((0, 0), window=self.checklist_frame, anchor="nw")
-        self.checklist_canvas.bind_all("<MouseWheel>", self.on_mouse_wheel) # Mousewheel bind
+        self.checklist_canvas.bind("<MouseWheel>", self.on_mouse_wheel) # Mousewheel bind
         
         # CHECKBOX PROCESS
         if hasattr(self, 'checkboxes'):
@@ -309,16 +340,24 @@ class Pet:
         self.checklist_frame.update_idletasks()        
         self.checklist_canvas.config(scrollregion=self.checklist_canvas.bbox("all"))
 
+        # Ensure scrollregion updates after packing is done (delay update if necessary)
+        self.checklist_frame.after(10, lambda: self.checklist_canvas.config(scrollregion=self.checklist_canvas.bbox("all")))
+
+        # Add this line to bind mousewheel to the canvas itself for scrolling anywhere
+        self.checklist_canvas.bind_all("<MouseWheel>", self.on_mouse_wheel)  # Enable scrolling anywhere
+
+    
     def on_mouse_wheel(self, event):
         """ Function to handle mouse wheel scrolling on the canvas """
-        if event.delta > 0:
-            # Scroll up
-            self.checklist_canvas.yview_scroll(-1, "units")
-        else:
-            # Scroll down
-            self.checklist_canvas.yview_scroll(1, "units")
+        if hasattr(self, 'checklist_canvas') and self.checklist_canvas.winfo_exists():  # Check if canvas exists
+            if event.delta > 0:            
+                self.checklist_canvas.yview_scroll(-1, "units")  # Scroll up
+            else:            
+                self.checklist_canvas.yview_scroll(1, "units")  # Scroll down
 
-    def process_task_status(self):        
+    def process_task_status(self):
+        """ Process the marking of task status
+        """
         for checkbox in self.checkboxes:
             task = checkbox.task  # Each checkbox holds its task
             if checkbox.get_state() == 1: # if box is selected, invert
@@ -331,12 +370,14 @@ class Pet:
         self.open_pet_room()
         
     def handle_task_removal(self):
+        """ Handle task removal internally
+        """
         # Display screen to remove tasks
         for widget in self.frame.winfo_children():
             widget.destroy()
         
         # Change bg
-        self.new_bg_image = Image.open("task_remove_bg.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/task_remove_bg.png")
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -347,19 +388,26 @@ class Pet:
         self.activities_label.place(relx=.5, rely=.12, anchor="center")
         
         # Confirm BUTTON
-        self.confirm_button_image = Image.open("confirm_button.png")  # Replace with your image file path
-        self.confirm_button_image = self.confirm_button_image.resize((226, 85))  # Resize to fit the button
-        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)  # Corrected this line
+        self.confirm_button_image = Image.open("interfaces/confirm_button.png")
+        self.confirm_button_image = self.confirm_button_image.resize((226, 85))
+        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)
         
         self.confirm_button = tk.Button(self.frame, image=self.confirm_button_photo, 
                                         command=self.process_task_removal, 
                                         bd=0, highlightthickness=0, activebackground="#EE8B5F")
-        self.confirm_button.place(relx=0.5, rely=0.67, anchor="center")  # Position it in the center        
-    
+        self.confirm_button.place(relx=0.5, rely=0.67, anchor="center")
+                
+        # RETURN BUTTON        
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
+        self.return_button_image = ImageTk.PhotoImage(self.return_img)     
+        self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
+                                    activebackground="#EE8B5F", highlightbackground="#EE8B5F",
+                                    command=self.open_activity_screen, borderwidth=0)
+        self.return_button.place(relx=0.05, rely=0.03)
+        
         # CHECKLIST CANVAS (scrollable)
         self.checklist_canvas = tk.Canvas(self.frame, width=320, height=240, bd=0, background="white")
         self.checklist_canvas.place(relx=0.5, rely=0.38, anchor="center")
-
         # Create scrollbars (VERTICAL)
         self.v_scrollbar = tk.Scrollbar(self.frame, orient="vertical", command=self.checklist_canvas.yview)
         self.v_scrollbar.place(relx=0.87, rely=0.38, anchor="center", height=244)
@@ -367,7 +415,7 @@ class Pet:
         # Configure canvas to use scrollbars
         self.checklist_canvas.configure(yscrollcommand=self.v_scrollbar.set)
 
-        # Create a frame inside the canvas to hold the checkboxes
+        # Frame to hold checkbox
         self.checklist_frame = tk.Frame(self.checklist_canvas, bg="white")
         self.checklist_canvas.create_window((0, 0), window=self.checklist_frame, anchor="nw")
 
@@ -384,7 +432,7 @@ class Pet:
             no_tasks_label = tk.Label(self.checklist_frame, text="No existing activities", bg="white", font=("Courier", 12))
             no_tasks_label.pack(padx=50,pady=30)
         else:
-            task_icon = Image.open("exile.png")
+            task_icon = Image.open("interfaces/exile.png")
             for task in self._tasks:
                 checkbox = CustomCheckbox(self.checklist_frame, task=task, icon=task_icon)
                 checkbox.pack(padx=10, pady=15, anchor="w")
@@ -394,14 +442,6 @@ class Pet:
         # Update the canvas scroll region when items are added to the checklist
         self.checklist_frame.update_idletasks()        
         self.checklist_canvas.config(scrollregion=self.checklist_canvas.bbox("all"))
-    
-        # RETURN BUTTON        
-        self.return_img = Image.open("return_button.png").resize((33,33))
-        self.return_button_image = ImageTk.PhotoImage(self.return_img)     
-        self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
-                                    activebackground="#EE8B5F", highlightbackground="#EE8B5F",
-                                    command=self.open_activity_screen, borderwidth=0)
-        self.return_button.place(relx=0.05, rely=0.03)    
     
     def process_task_removal(self):
         """ handles task removal and stays at the same screen
@@ -428,13 +468,13 @@ class Pet:
             widget.destroy()
 
         # Change bg
-        self.new_bg_image = Image.open("new_task_bg.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/new_task_bg.png")
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
         # RETURN button
-        self.return_img = Image.open("return_button.png").resize((33,33))
+        self.return_img = Image.open("interfaces/return_button.png").resize((33,33))
         self.return_button_image = ImageTk.PhotoImage(self.return_img)     
         self.return_button = tk.Button(self.frame, image=self.return_button_image, background="#EE8B5F",
                                        activebackground="#EE8B5F", highlightbackground="#EE8B5F",
@@ -450,20 +490,20 @@ class Pet:
         self.username_entry.place(relx=0.5, rely=0.40, anchor="center")
 
         # CONFIRM BUTTON
-        self.confirm_button_image = Image.open("confirm_button.png")  # Replace with your image file path
-        self.confirm_button_image = self.confirm_button_image.resize((285, 100))  # Resize to fit the button
-        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)  # Corrected this line
+        self.confirm_button_image = Image.open("interfaces/confirm_button.png")
+        self.confirm_button_image = self.confirm_button_image.resize((285, 100))
+        self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)
         
         self.confirm_button = tk.Button(self.frame, image=self.confirm_button_photo, 
                                         command = self.process_new_task, 
                                         bd=0, highlightthickness=0, activebackground="#EE8B5F")
-        self.confirm_button.place(relx=0.5, rely=0.58, anchor="center")  # Position it in the center
+        self.confirm_button.place(relx=0.5, rely=0.58, anchor="center")
         
     def process_new_task(self):
         """ Handles the creation of a new task and go back to activity room
         """
         # choose and validate username
-        new_desc = self.username_entry.get()        
+        new_desc = self.username_entry.get().strip()        
         
         # Check if the username is empty
         if not new_desc:
@@ -499,6 +539,8 @@ class Pet:
         self.open_activity_screen()
   
     def save_tasks(self):
+        """ Save the current internal data to csv file
+        """
         with open(TASK_FILENAME, mode = "r") as file:
             reader = csv.reader(file)
                                         
@@ -517,7 +559,11 @@ class Pet:
             writer.writerows(new_rows)
 
     def open_event_window(self):
-        def close_event_window():            
+        """ Display output for random event
+        """
+        def close_event_window():
+            """ Function to close the event label ("Window")
+            """
             if hasattr(self, 'event_frame'):
                 self.event_frame.destroy()
                 self.event_frame = None
@@ -540,12 +586,12 @@ class Pet:
             
             (self.acc).save_pets()            
             
-            # Create the event window frame, ensure it's placed above the main frame
+            # Create the event window frame; above parent frame
             self.event_frame = tk.Frame(self.frame, bg="#87CEEB", bd=5,
                                         highlightthickness=5, highlightbackground="white")
             self.event_frame.place(relx=0.5, rely=0.45, anchor="center", width=320, height=140)
 
-            # Add label with prompt text
+            # PROMPT LABEL
             label = tk.Label(self.event_frame, text=prompt, font=("Courier", 10, "bold"),
                             fg="white", bg="#87CEEB", wraplength=300, justify="center", pady=4)
             label.place(relx=0.5, rely=0.4, anchor="center")
@@ -556,41 +602,39 @@ class Pet:
                             bg="white", fg="#87CEEB", wraplength=300, justify="center", pady=1)
                 label.place(relx=0.5, rely=0.01, anchor="center")
 
-            # Add "Continue" button
+            # CONTINUE BUTTON
             continue_button = tk.Button(self.event_frame, text="Continue", font=("Courier", 12),
                                         command=close_event_window, fg="white", bg="#5E9D3E", width=8,
                                         activebackground="#5E9D3E", activeforeground="white")
             continue_button.place(relx=0.5, rely=0.83, anchor="center")
 
             # Update the frame layout
-            self.frame.update_idletasks()  # Update layout if necessary            
-        else:            
-            self.event_frame = tk.Frame(self.frame, bg="#87CEEB", bd=5,
-                                        highlightthickness=5, highlightbackground="white")
-            self.event_frame.place(relx=0.5, rely=0.45, anchor="center", width=320, height=140)
-            
-            event_occured_label = tk.Label(self.event_frame, text=f"{self._name} attended an event today already.", font=("Courier", 15, "bold"),
+            self.frame.update_idletasks()       
+        else:
+            # EVENT FRAME
+            self.event_frame = tk.Frame(self.frame, bg="#87CEEB", bd=5, highlightthickness=5, highlightbackground="white")
+            self.event_frame.place(relx=0.5, rely=0.45, anchor="center", width=320, height=140)            
+            # EVENT LABEL
+            event_occured_label = tk.Label(self.event_frame, text=f"{self._name} attended an event today already.", 
+                                           font=("Courier", 15, "bold"),
                             fg="white", bg="#87CEEB", wraplength=240, justify="center", pady=4)
             event_occured_label.place(relx=0.5, rely=0.4, anchor="center")
-                    
+            #CONTINUE BUTTON
             continue_button = tk.Button(self.event_frame, text="Continue", font=("Courier", 12),
                                         command=close_event_window, fg="white", bg="#5E9D3E", width=8,
                                         activebackground="#5E9D3E", activeforeground="white")
             continue_button.place(relx=0.5, rely=0.82, anchor="center")
 
     def update_status_interface(self):
-        """ Update the pet image based on the current status. """
-        # Assume you have an image path for different statuses
-        status_path = f"status{self._status}.png"
+        """ Update the pet image based on the current status. """        
+        status_path = f"interfaces/status{self._status}.png"
 
         self.pet_image = Image.open(status_path)  # Update the image based on the status
-        self.pet_photo = ImageTk.PhotoImage(self.pet_image)  # Convert it to Tkinter format
+        self.pet_photo = ImageTk.PhotoImage(self.pet_image)
 
         # Assuming self.status_label is the label where the pet image is displayed
         self.status_label.config(image=self.pet_photo)
-        self.status_label.image = self.pet_photo  # Keep a reference to the image
-
-        # Position the label using place()
+        self.status_label.image = self.pet_photo  # Keep a reference to the image        
         self.status_label.place(relx=0.1, rely=0.13)
         
     

@@ -1,6 +1,3 @@
-from check_input import *
-
-
 class Task:
     """ Serves as a container called activities
         Attributes:
