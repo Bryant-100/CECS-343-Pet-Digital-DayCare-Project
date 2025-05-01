@@ -11,7 +11,27 @@ from tkinter import messagebox
 PETS_FILENAME = "pets.csv"
 
 class Account:
+    """ Represent a user account, holds information on the account holder's pet
+     Attributes:
+        root (Tk): The root Tkinter window
+        frame (Frame): The GUI frame where the pet is displayed
+        acc (Account): The account associated with this pet
+        app (App): the App instance to refer to        
+        _username (str): unique 14 character username of the account holder
+        _user_id (str): 5-digit unique identifier
+        _pets (list): stores Pet owned by account holder
+        button_dict (dict): A dictionary to store button widgets associated with pets.
+        pet (Pet): The current pet associated with the account (if any).
+    """
     def __init__(self, root, frame, app, username, user_id):
+        """ Initialize the Account instance with basic user information and setup.
+        Args:
+            root (Tk): The root Tkinter window
+            frame (Frame): The GUI frame where the pet is displayed
+            app (App): the App instance to refer to        
+            username (str): unique 14 character username of the account holder
+            user_id (str): 5-digit unique identifier
+        """
         self.root = root
         self.frame = frame
         self.app = app
@@ -30,27 +50,22 @@ class Account:
         return self._user_id
         
     def open_home_screen(self):
-        """ The starter screen for home
-
-        Args:
-            user (Account): the User instance selected 
+        """ Displays the starter screen for home
         """
         # Clear the main screen
         for widget in self.frame.winfo_children():
             widget.destroy()
                 
         # Change the background image for this screen
-        self.new_bg_image = Image.open("template.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/template.png")
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)    
-        
-        
-        # initialize user        
-        self.load_csv()
+            
+        self.load_csv() # initialize user
         
         # RETURN BUTTON
-        back_button_img = Image.open("return_button.png")
+        back_button_img = Image.open("interfaces/return_button.png")
         back_button_img = back_button_img.resize((36, 36))
         self.back_button_img_photo = ImageTk.PhotoImage(back_button_img)
 
@@ -63,11 +78,10 @@ class Account:
         self.load_banner()
     
     def load_csv(self):
-        """ Load in data from file
+        """ Load in pet data from csv file
         """
         self._pets = []
-        today = datetime.today().date()
-        # reading in pets
+        today = datetime.today().date()        
         try:            
             with open(PETS_FILENAME, mode="r") as file:
                 reader = csv.reader(file)            
@@ -76,8 +90,7 @@ class Account:
                     if read_user_id == self.user_id: #checking for correct user_id                        
                         if last_date != str(today): #new day == reset mood, reset event attempt
                             status = 1
-                            event = 0
-                            # last_date = str(today)
+                            event = 0                            
                         self._pets.append(Pet(self.root, self.frame, self, pet_name, pet_id, int(status), int(species),int(animal_id), int(event)))
         except FileNotFoundError: # create new file if pets.csv not found            
             open(PETS_FILENAME, mode="w").close()
@@ -110,8 +123,8 @@ class Account:
     def load_banner(self):
         """ Load the initial banners for home screen
         """
-        selection = {1: "domes_banner.png", 
-                     2: "dino_banner.png"}
+        selection = {1: "interfaces/domes_banner.png", 
+                     2: "interfaces/dino_banner.png"}
         if len(self._pets) > 0: # at least 1
             self.pet1 = self._pets[0]
             room1_banner_img = selection[self.pet1.species]
@@ -124,8 +137,7 @@ class Account:
                                            command=lambda: self.room_selection_handler(self.pet1,1), 
                                            font=("Courier", 29, "bold"), fg='#FFBC9D', 
                                            bd=3, borderwidth=0, highlightthickness=2, activebackground="#C77E5D",
-                                           background = "#EE8B5F"
-                                          )
+                                           background = "#EE8B5F")
             self.room1_button.place(x=34, rely=0.1)
             self.button_dict[1] = self.room1_button
             
@@ -143,7 +155,7 @@ class Account:
                     (self.pet).open_pet_room()
 
             # ENTER button            
-            self.enter_button_img = tk.PhotoImage(file="enter_button.png")            
+            self.enter_button_img = tk.PhotoImage(file="interfaces/enter_button.png")            
             self.enter_button = tk.Button(self.frame, image=self.enter_button_img, 
                                           command=process_enter_button,
                                           bd=0, highlightthickness=0, borderwidth=0, background="#EE8B5F",
@@ -151,7 +163,7 @@ class Account:
             self.enter_button.place(relx=0.29, y=500)
             
             # SETTING button            
-            resized_image = Image.open("setting_icon.png").resize((45, 40))
+            resized_image = Image.open("interfaces/setting_icon.png").resize((45, 40))
             self.setting_img = ImageTk.PhotoImage(resized_image)
             self.setting_button = tk.Button(self.frame, image=self.setting_img, 
                                           command=self.open_pet_removal_screen,
@@ -173,8 +185,7 @@ class Account:
                                             command=lambda: self.room_selection_handler(self.pet2,2),
                                             font=("Courier", 29, "bold"), fg='#FFBC9D', 
                                             bd=3, borderwidth=0, highlightthickness=2, activebackground="#C77E5D",
-                                            background = "#EE8B5F"
-                                            )
+                                            background = "#EE8B5F")
                 self.room2_button.place(x=34, rely=0.30)
                 self.button_dict[2] = self.room2_button
 
@@ -189,40 +200,39 @@ class Account:
                                                 command=lambda: self.room_selection_handler(self.pet3,3),
                                                 font=("Courier", 29, "bold"), fg='#FFBC9D', 
                                                 bd=3, borderwidth=0, highlightthickness=2, activebackground="#C77E5D",
-                                                background = "#EE8B5F"
-                                                )
+                                                background = "#EE8B5F")
                     self.room3_button.place(x=34, rely=0.5)
                     self.button_dict[3] = self.room3_button
 
                 else: # creates 1 button for add pet
-                    empty_img = tk.PhotoImage(file="empty_banner.png")
+                    empty_img = tk.PhotoImage(file="interfaces/empty_banner.png")
 
                     self.empty_image = empty_img                
                     self.empty_button1 = tk.Button(self.frame,image=empty_img, command=self.open_create_pet_screen,
                                                 bd=3, borderwidth=0, highlightthickness=2, activebackground="#C77E5D",
-                                                background = "#EE8B5F"
-                                                )
+                                                background = "#EE8B5F")
                     self.empty_button1.place(x=34, rely=0.5)
             else: # create two button for add_pet                
-                empty_img = tk.PhotoImage(file="empty_banner.png")
+                empty_img = tk.PhotoImage(file="interfaces/empty_banner.png")
 
                 self.empty_image = empty_img                
                 self.empty_button1 = tk.Button(self.frame,image=empty_img, command=self.open_create_pet_screen,
                                             bd=3, borderwidth=0, highlightthickness=2, activebackground="#C77E5D",
-                                            background = "#EE8B5F"
-                                            )
+                                            background = "#EE8B5F")
                 self.empty_button1.place(x=34, rely=0.30)
                 
                 self.empty_button2 = tk.Button(self.frame,image=empty_img, command=self.open_create_pet_screen,
                                             bd=3, borderwidth=0, highlightthickness=2, activebackground="#C77E5D",
-                                            background = "#EE8B5F"
-                                            )
+                                            background = "#EE8B5F")
                 self.empty_button2.place(x=34, rely=0.5)       
         else:
             self.open_create_pet_screen()
     
     def room_selection_handler(self, pet, index):
         """ Confirms the room selection for the pet home screen
+        Args:
+            pet (Pet): the Pet instance to refer to
+            index (int): the index of the selected room
         """
         # Deselect the previously selected button (if any) and check if it exists
         if hasattr(self, 'selected_button') and self.selected_button and self.selected_button.winfo_exists():
@@ -245,7 +255,7 @@ class Account:
         for widget in self.frame.winfo_children():
             widget.destroy()
                    
-        self.new_bg_image = Image.open("choose_account_bg.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/choose_account_bg.png") 
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
 
         # Show background on pick screen
@@ -280,8 +290,8 @@ class Account:
         self.listbox.config(yscrollcommand=scrollbar.set)
         
         # EXILE BUTTON
-        button_bg_img = Image.open("bye_button.png")  # Replace with your image
-        button_bg_img = button_bg_img.resize((220, 90))  # Resize to fit your button size
+        button_bg_img = Image.open("interfaces/bye_button.png")
+        button_bg_img = button_bg_img.resize((220, 90))
         button_bg_photo = ImageTk.PhotoImage(button_bg_img)
 
         def handle_removal():
@@ -292,14 +302,12 @@ class Account:
             if not selected_index: # return if no selection is made
                 return 
             selected_index = selected_index[0]  # get index from tuple of size 1
-
             selected_pet = self._pets[selected_index]  # get the Account object by index
                 
             # Ask for confirmation
             confirmation = messagebox.askyesno(
                 title="Confirm Removal",
-                message=f"Say goodbye to {selected_pet.name}?"
-            )
+                message=f"Say goodbye to {selected_pet.name}?")
             
             # Process removal with CSV
             if confirmation:                
@@ -314,7 +322,6 @@ class Account:
                 with open(PETS_FILENAME, mode="w", newline="") as file:
                     writer = csv.writer(file)
                     writer.writerows(new_rows)
-
                 self._pets.remove(selected_pet)
                 
                 # Call back to the main screen
@@ -330,7 +337,7 @@ class Account:
         self.select_button.image = button_bg_photo  # Store a reference to the image
         
         # BACK BUTTON
-        back_button_img = Image.open("return_button.png")  # Load the image
+        back_button_img = Image.open("interfaces/return_button.png")  # Load the image
         back_button_img = back_button_img.resize((38, 38))  # Resize to fit your button size
         self.back_button_img_photo = ImageTk.PhotoImage(back_button_img)  # Keep reference with self.
 
@@ -349,16 +356,16 @@ class Account:
         self.selected_animal_id = None
         self.selected_button = None
         
-        self.new_bg_image = Image.open("template.png")  # New background image
+        self.new_bg_image = Image.open("interfaces/template.png")  # New background image
         self.new_bg_photo = ImageTk.PhotoImage(self.new_bg_image)
         
         self.bg_label = tk.Label(self.frame, image=self.new_bg_photo)
         self.bg_label.place(x=0, y=0, relwidth=1, relheight=1)
         
-        # dog, cat, ham, rex, bronto
+        # dog, cat, ham, rex, bronto, trice
         image_paths = [
             "pets/dog.png", "pets/cat.png", "pets/ham.png",
-            "pets/rex.png", "pets/bronto.png"]
+            "pets/rex.png", "pets/bronto.png", "pets/trice.png"]
         self.selected_index = [None]  # Mutable to update inside inner functions
         
         # Inner frame (smaller)
@@ -407,12 +414,13 @@ class Account:
         # Bind mouse wheel scrolling to canvas
         def on_mouse_wheel(event):
             """Handle mouse wheel scrolling."""
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            if canvas.winfo_exists():  # Check if the canvas still exists
+                canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
-        # Bind mouse wheel event to canvas (works for both Windows and Mac)
-        canvas.bind_all("<MouseWheel>", on_mouse_wheel)  # For Windows
-        canvas.bind_all("<Button-4>", on_mouse_wheel)  # For Linux (wheel up)
-        canvas.bind_all("<Button-5>", on_mouse_wheel)  # For Linux (wheel down)
+        # Bind mouse wheel event directly to the canvas (not globally)
+        canvas.bind("<MouseWheel>", on_mouse_wheel)  # For Windows
+        canvas.bind("<Button-4>", on_mouse_wheel)  # For Linux (wheel up)
+        canvas.bind("<Button-5>", on_mouse_wheel)  # For Linux (wheel down)
 
         # Store images and buttons as before
         images = []
@@ -471,7 +479,7 @@ class Account:
         self.error_label.place_forget()
 
         # CONFIRM button
-        self.confirm_button_image = Image.open("confirm_button.png")  # Replace with your image file path
+        self.confirm_button_image = Image.open("interfaces/confirm_button.png")  # Replace with your image file path
         self.confirm_button_image = self.confirm_button_image.resize((226, 85))  # Resize to fit the button
         self.confirm_button_photo = ImageTk.PhotoImage(self.confirm_button_image)  # Corrected this line
         
@@ -516,6 +524,4 @@ class Account:
                     self.selected_button = None
 
                 (self.pet).open_pet_room()
-                
-                
-                        
+
