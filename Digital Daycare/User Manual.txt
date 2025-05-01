@@ -1,0 +1,22 @@
+User Manual: Pawductive – Digital Daycare
+1. Introduction
+	Pawductive: Digital Daycare is a desktop application designed to help users maintain daily routines through gamification. It simulates a virtual pet daycare, where completing tasks helps care for your pets and skipping them affects their mood. By transforming productivity into a playful experience, Pawductive encourages consistency in a fun, engaging way.
+
+2. Target Audience
+	This application is ideal for:
+	- Students, professionals, or anyone seeking to build or stick to a daily routine.
+	- Users who enjoy gamified productivity tools.
+	- People who like caring for virtual pets.
+3. Getting Started
+	Upon launching the app:
+	- Create an account
+	- Create a pet; customize it's name and appearance.
+	- Add Activities – Define daily tasks (e.g., "Drink water", "Study 30 minutes").
+	- Mark Tasks as Complete/Incomplete – Each completed task improves your pet's status
+
+
+4. Features
+- Custom Activities: Create, update, and remove your own daily tasks.
+- Pet Mood Tracking: Your pet’s status reflects your task completion.
+- Daily Reset: Tasks refresh daily, encouraging daily engagement.
+- Save Progress: Your routines and pet status are saved automatically
