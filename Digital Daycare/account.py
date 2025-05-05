@@ -1,5 +1,5 @@
 from check_input import *
-from pet import Pet
+from pet import Pet, TASK_FILENAME
 from datetime import datetime
 import csv, random
 
@@ -302,12 +302,12 @@ class Account:
             if not selected_index: # return if no selection is made
                 return 
             selected_index = selected_index[0]  # get index from tuple of size 1
-            selected_pet = self._pets[selected_index]  # get the Account object by index
+            self.selected_pet = self._pets[selected_index]  # get the Account object by index
                 
             # Ask for confirmation
             confirmation = messagebox.askyesno(
                 title="Confirm Removal",
-                message=f"Say goodbye to {selected_pet.name}?")
+                message=f"Say goodbye to {self.selected_pet.name}?")
             
             # Process removal with CSV
             if confirmation:                
@@ -315,14 +315,16 @@ class Account:
                 with open(PETS_FILENAME, mode="r", newline="") as file:
                     reader = csv.reader(file)
                     for row in reader:
-                        if row and row[2] != selected_pet.pet_id:
+                        if row and row[2] != self.selected_pet.pet_id:
                             new_rows.append(row)
 
                 # Rewrite CSV without the deleted account
                 with open(PETS_FILENAME, mode="w", newline="") as file:
                     writer = csv.writer(file)
                     writer.writerows(new_rows)
-                self._pets.remove(selected_pet)
+                self._pets.remove(self.selected_pet)
+                
+                self.follow_task_deletion()
                 
                 # Call back to the main screen
                 self.open_home_screen()
@@ -346,6 +348,41 @@ class Account:
                                     font=("Courier", 12), borderwidth=0, background="#EE8B5F",
                                     highlightthickness=0, activebackground="#EE8B5F", relief="flat")
         self.back_button.place(relx=0.1, rely=.1, anchor="center")
+         
+    def follow_task_deletion(self):
+        """ Helper function to delete tasks of this pet's tasks
+        """        
+        new_rows = []
+        with open(TASK_FILENAME, mode="r", newline="") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row and row[0] != self.selected_pet.pet_id:
+                    new_rows.append(row)
+
+        # Rewrite CSV without the deleted account
+        with open(TASK_FILENAME, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows(new_rows)
+    
+    def wipe_pet_saves(self):
+        """ Delete all pet information including tasks
+        """        
+        self.load_csv()
+        for pet in self._pets:
+            pet.wipe_tasks()
+        
+        for pet in self._pets:
+            new_rows = []
+            with open(PETS_FILENAME, mode="r", newline="") as file:
+                reader = csv.reader(file)
+                for row in reader:
+                    if row and row[0] != self.user_id:
+                        new_rows.append(row)
+            
+            with open(PETS_FILENAME, mode="w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerows(new_rows)
+
     
     def open_create_pet_screen(self):
         """ Display and Process pet creation 

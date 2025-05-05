@@ -303,6 +303,8 @@ class AccountManager:
         
         # Process removal with CSV
         if confirmation:            
+            selected_user.wipe_pet_saves()
+            
             new_rows = []
             with open(ACC_FILENAME, mode="r", newline="") as file:
                 reader = csv.reader(file)
@@ -318,6 +320,6 @@ class AccountManager:
             self._users.remove(selected_user)  # Remove from the list of users
 
             # Call back to the main screen
-            self.app.back_to_main()            
+            self.app.back_to_main()
 
             

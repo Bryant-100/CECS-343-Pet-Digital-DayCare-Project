@@ -85,8 +85,7 @@ class Pet:
         _animal_id (int): Encoded specific animal chosen
         _event (int): Current status of event's completion for the day
         _tasks (list): A list of Task objects assigned to the pet.
-        checkboxes (list): GUI checkbox widgets linked to each task.
-        extra_stat (int): Placeholder for additional state/stat tracking.
+        checkboxes (list): GUI checkbox widgets linked to each task.        
     """
     def __init__(self, root, frame, account, name, pet_id, status, species, animal_id, event):
         """ Initialize the Pet instance
@@ -112,8 +111,7 @@ class Pet:
         self._animal_id = int(animal_id)
         self._event = int(event)
         self._tasks = []
-        self.checkboxes = []
-        self.extra_stat = 0
+        self.checkboxes = []                
     
     @property
     def species(self):
@@ -176,8 +174,8 @@ class Pet:
             self.final_status = max(1, min(calc_status,5)) # range 1-5
         else:
             self.final_status = 1
-        
-        self._status = max(1, min(self.final_status + self.extra_stat,5))
+                        
+        self._status = max(1, min(self.final_status + self.event,5))
         status_path = f"interfaces/status{self._status}.png"
         self.status_image = ImageTk.PhotoImage(Image.open(status_path))
         self.status_label = tk.Label(self.frame, image=self.status_image, bg="black")
@@ -345,7 +343,6 @@ class Pet:
 
         # Add this line to bind mousewheel to the canvas itself for scrolling anywhere
         self.checklist_canvas.bind_all("<MouseWheel>", self.on_mouse_wheel)  # Enable scrolling anywhere
-
     
     def on_mouse_wheel(self, event):
         """ Function to handle mouse wheel scrolling on the canvas """
@@ -456,9 +453,9 @@ class Pet:
             if confirmed:            
                 self._tasks = [task for task in self._tasks if task not in selected_tasks]                
                 
-                # Refresh the task removal screen
-                self.handle_task_removal()
-                self.save_tasks()
+                # Refresh the task removal screen                
+                self.handle_task_removal()                
+                self.save_tasks()    
 
     def handle_new_task(self):
         """ Display screen to add new_task
@@ -537,6 +534,19 @@ class Pet:
             writer.writerow([self._pet_id, new_id, new_desc, 0])
         
         self.open_activity_screen()
+
+    def wipe_tasks(self):        
+        new_rows = []
+        with open(TASK_FILENAME, mode="r", newline="") as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row and row[0] != self.pet_id:
+                    new_rows.append(row)
+
+        # Rewrite CSV without the deleted 
+        with open(TASK_FILENAME, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerows(new_rows)
   
     def save_tasks(self):
         """ Save the current internal data to csv file
@@ -567,8 +577,11 @@ class Pet:
             if hasattr(self, 'event_frame'):
                 self.event_frame.destroy()
                 self.event_frame = None
+                (self.acc).save_pets()
+                self.update_status_interface()
             else:
                 self.update_status_interface()
+                
                 
         if hasattr(self, 'event_frame') and self.event_frame is not None:
             return  # prevent multiple event frames at once
@@ -577,14 +590,19 @@ class Pet:
             event_random = random.randint(1, 3)
             self.called_event = Event()
             available = {1: self.called_event.park, 2: self.called_event.swim, 3: self.called_event.bake}
-            result, prompt = available[event_random]()
-            self.extra_stat = result
+            result, prompt = available[event_random]()            
+            
             # Process result
-            self._status += result
-            self._status = max(1, min(5, self._status))  # Ensure range 1-5
+            if (result > 0):
+                final = 1
+            else:
+                final = -1
+            
+            self._status += final
+            self._status = max(1, min(5, self._status))  # Ensure range 1-5            
             self._event = 1
             
-            (self.acc).save_pets()            
+            (self.acc).save_pets()
             
             # Create the event window frame; above parent frame
             self.event_frame = tk.Frame(self.frame, bg="#87CEEB", bd=5,
@@ -609,7 +627,8 @@ class Pet:
             continue_button.place(relx=0.5, rely=0.83, anchor="center")
 
             # Update the frame layout
-            self.frame.update_idletasks()       
+            self.frame.update_idletasks()
+            self.status_label.update_idletasks() 
         else:
             # EVENT FRAME
             self.event_frame = tk.Frame(self.frame, bg="#87CEEB", bd=5, highlightthickness=5, highlightbackground="white")
@@ -635,6 +654,7 @@ class Pet:
         # Assuming self.status_label is the label where the pet image is displayed
         self.status_label.config(image=self.pet_photo)
         self.status_label.image = self.pet_photo  # Keep a reference to the image        
-        self.status_label.place(relx=0.1, rely=0.13)
+        self.status_label.place(relx=0.265, rely=0.202)        
+        self.acc.save_pets()        
         
     

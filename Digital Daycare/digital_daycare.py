@@ -106,8 +106,8 @@ class App:
                 
         self.setup_main_screen()
 
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = App(root)
     root.mainloop()
-
